@@ -14,3 +14,21 @@ app.get('/', (req, res) => {
 
 //use static files
 app.use(express.static(__dirname + '/public'));
+
+//set port for listening
+var midPort = app.listen(port, function () {
+    console.log("Server is listening on port " + port);
+});
+
+
+//use socker io
+var socketServer = require('socket.io');
+var io = socketServer(midPort);
+
+//setup socket connection
+io.sockets.on('connection', function(socket) {
+    socket.emit('message', {message: 'Welcome to the webchat !'});
+    socket.on('send', function(data) {
+        io.sockets.emit('message', data);
+    });
+});
